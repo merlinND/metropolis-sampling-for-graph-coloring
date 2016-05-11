@@ -40,12 +40,12 @@ for i=1:n
     x_new = x;
     x_new(v) = v_c;
     
-    delta = H(G,x_new) - H(G,x);      % Energy difference
-    if delta <= 0                     % Accept if lower energy...
+    delta_E = H(G,x_new) - H(G,x);      % Energy difference
+    if delta_E <= 0                     % Accept if lower energy...
         x = x_new;
     else                              % ...or with acceptance probability
         beta = getNextBeta(i,n);
-        accept = rand(1)<=exp(-beta*delta);
+        accept = rand(1)<=exp(-beta*delta_E);
         if accept, x = x_new; end
     end
     
