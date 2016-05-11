@@ -2,6 +2,7 @@
 clear vars
 close all
 rng(26);
+addpath(genpath('lib'));
 
 %% Setup
 
@@ -20,6 +21,7 @@ G = G | G';
 x = randsample(q,N,true);
 
 visualizeGraph(G,x,'Original graph');
+export_fig('/tmp/original.pdf');  % High-quality figure for report
 %return;
 
 %% Metropolis
