@@ -179,6 +179,7 @@
 function [im, alpha] = export_fig(varargin)
 % Make sure the figure is rendered correctly _now_ so that properties like
 % axes limits are up-to-date.
+warning('off','MATLAB:graphicsversion:GraphicsVersionRemoval');
 drawnow;
 % Parse the input arguments
 [fig, options] = parse_args(nargout, varargin{:});

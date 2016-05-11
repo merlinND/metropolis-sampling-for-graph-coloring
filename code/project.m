@@ -41,13 +41,11 @@ for i=1:n
     x_new(v) = v_c;
     
     delta_E = H(G,x_new) - H(G,x);      % Energy difference
-    if delta_E <= 0                     % Accept if lower energy...
-        x = x_new;
-    else                              % ...or with acceptance probability
-        beta = getNextBeta(i,n);
-        accept = rand(1)<=exp(-beta*delta_E);
-        if accept, x = x_new; end
-    end
+    beta = getNextBeta(i,n);
+    % Accept if lower energy or with acceptance probability:
+    accept = rand(1)<=min(1,exp(-beta*delta_E));
+
+    if accept, x = x_new; end
     
     current_energy = H(G,x);
     % Update plot
