@@ -1,34 +1,34 @@
 %% Random Walks SS2016 - Simmulated Annealing for Graph Coloring
-clear all
-%%
+clear vars
+close all
+rng(26);
+
+%% Setup
 
 % Generate test adjacency matrix
-N = 20;             % Number of edges
-q = 6;              % Number of colors
+N = 15;             % Number of edges
+q = 5;              % Number of colors
 beta = 0.2;         % Inverse temperature
-c = 5;             % Density
+c = 3;              % Density
 
 % Erd\"os-R\'enyi graph
 G = rand(N) < c/N;  % Assign edges
-G = triu(G,1);      % Ensure symmetric
+G = triu(G,1);      % Ensure symmetric -
 G = G | G';
-%disp(G)
 
-% Check if number of edges is concentrated on c*N/2
-fprintf('%d should be close to %d\n', sum(sum(G)), N*c);
-
-%% Initial state
+%% Initial coloring
 x = randsample(q,N,true);
-%hist(x, q);  % Visualize distribution (uniform for large N)
+
+visualizeGraph(G,x,'Original graph');
+%return;
 
 %% Metropolis
 
-n=2000;  % Number of iterations
+n=35;  % Number of iterations
 
-% Visualization
-figure;
-h = animatedline;
-xlim([1,n]);
+% Initialize optimization visualization
+figure; h = animatedline; xlim([1,n]);
+title('Energy'); xlabel('Iterations'); ylabel('Cost');
 
 % Metropolis iteration
 for i=1:n
@@ -42,10 +42,9 @@ for i=1:n
     if delta <= 0                     % Accept if lower energy...
         x = x_new;
     else                              % ...or with acceptance probability
+        beta = getNextBeta(i,n);
         accept = rand(1)<=exp(-beta*delta);
-        if accept
-            x = x_new;
-        end
+        if accept, x = x_new; end
     end
     
     current_energy = H(G,x);
@@ -54,7 +53,10 @@ for i=1:n
     drawnow;
     
     if current_energy==0
-        fprintf('Proper coloring found \n');
+        fprintf('Proper coloring found! ');
         disp(x');
+        visualizeGraph(G,x,sprintf('Proper coloring %i',i));
+    %else
+    %    visualizeGraph(G,x,sprintf('Non proper coloring %i',i));
     end
 end
