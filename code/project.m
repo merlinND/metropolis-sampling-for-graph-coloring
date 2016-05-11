@@ -1,7 +1,7 @@
 %% Random Walks SS2016 - Simmulated Annealing for Graph Coloring
 clear vars
 close all
-rng(26);
+%rng(26);
 addpath(genpath('lib'));
 
 %% Setup
@@ -14,7 +14,7 @@ c = 3;              % Density
 
 % Erd\"os-R\'enyi graph
 G = rand(N) < c/N;  % Assign edges
-G = triu(G,1);      % Ensure symmetric -
+G = triu(G,1);      % Ensure symmetric
 G = G | G';
 
 %% Initial coloring
@@ -37,8 +37,7 @@ for i=1:n
     v = randsample(N,1);              % Selected vertex
     v_c = randsample(q-1,1);          % New color
     if v_c >= x(v), v_c = v_c+1; end  % Assign color different from current
-    x_new = x;
-    x_new(v) = v_c;
+    x_new = x; x_new(v) = v_c;
     
     delta_E = H(G,x_new) - H(G,x);      % Energy difference
     beta = getNextBeta(i,n);
@@ -49,8 +48,7 @@ for i=1:n
     
     current_energy = H(G,x);
     % Update plot
-    addpoints(h, i, current_energy);
-    drawnow;
+    addpoints(h, i, current_energy); drawnow;
     
     if current_energy==0
         fprintf('Proper coloring found! ');
