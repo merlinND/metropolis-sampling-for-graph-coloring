@@ -13,9 +13,7 @@ beta = 0.2;         % Inverse temperature
 c = 3;              % Density
 
 % Erdos-Renyi graph
-G = rand(N) < c/N;  % Assign edges
-G = triu(G,1);      % Ensure symmetric
-G = G | G';
+G = randomGraph(N, c);
 
 %% Initial coloring
 x = randsample(q, N, true);
@@ -28,9 +26,8 @@ export_fig('/tmp/original.pdf');  % High-quality figure for report
 
 n = 5000;  % Number of iterations
 x = randsample(q, N, true);
-current_energy = H(G, x);
 
-% Initialize optimization visualization
+current_energy = H(G, x);
 energies = zeros(n, 1);
 
 % Metropolis iteration
