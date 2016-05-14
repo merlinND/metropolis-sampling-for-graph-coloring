@@ -6,9 +6,9 @@
 
 % TODO: tweak these values
 max_iterations = 5000;
-N = 50;
+N = 100;
 qValues = [3 5 7];
-cValues = linspace(0, N, 15);
+cValues = linspace(0, N, 20);
 % Since we're working with random graphs, we make several random draws
 % to make sure that we obtain relevant data points.
 nDraws = 5;
@@ -32,7 +32,7 @@ end;
 figure; hold on;
 legends = {};
 for k = 1:length(qValues)
-    m = mean(minimum_energies(:, :, k), 1);
+    m = mean(minimum_energies(:, :, k), 
     u = std(minimum_energies(:, :, k), 1);
     errorbar(cValues, m, u, '+');
     legends{end+1} = sprintf('q = %d colors', qValues(k));
