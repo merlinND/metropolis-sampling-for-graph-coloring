@@ -12,6 +12,8 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         competitionDataPath = '../data/RW2016.mat';
     end
         
+    warning('off','MATLAB:DELETE:FileNotFound');
+    
     competitionData = load(competitionDataPath);
     i=1;
     minEnergy = Inf;
