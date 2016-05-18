@@ -4,6 +4,9 @@ close all
 %rng(26);
 addpath(genpath('lib'));
 
+competition_path = 'RW2016.mat';
+
+
 %% Setup
 
 % Generate test adjacency matrix
