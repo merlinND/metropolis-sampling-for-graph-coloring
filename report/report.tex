@@ -5,11 +5,14 @@
 % \usepackage{subfigure}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{url}
 
 \usepackage{algorithm}
-\usepackage{algpseudocode}
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
-\title{Random Walks course project: Simulated Annealing Algorithm for Graph Coloring}
+
+\title{Random Walks course project\\Simulated Annealing Algorithm for Graph Coloring}
 
 \author{
   R\'oger Berm\'udez Chac\'on\\EPFL
@@ -22,35 +25,47 @@
 \begin{document}
   \maketitle
 
+  \paragraph{Abstract}
+  We formulate the graph coloring problem as an optimization problem and use the Metropolis-Hastings algorithm to setup a Markov Chain that converges to a proper coloring. Simulated annealing is used to improve the convergence speed. In this report, we recall the problem statement and formulation, present the simulated annealing schemes devised, give relevant implementation details and finally present results.
+
   % -----------------------------------------------------------------------------------
   \section*{Problem statement}
-  \paragraph{Proper q-colorings}
-  TODO: Define the problem. Show how the problem is posed as an optimization (cost, etc).
+  \paragraph{Proper $q$-colorings}
+  Let $G = (V, E)$ a graph with $|V| = N$. A \emph{coloring} using $q$ colors is an assignment $x \in \{ 1, \ldots, q \}^N$. A \emph{proper} $q$-coloring is a coloring such that no two adjacent edges have the same color: $(v, v') \in E \Rightarrow x_v \neq x_{v'}$. From this definition, we can define a cost function (Hamiltonian) to evaluate the ``quality'' of a given coloring:
+  \[
+    H(x) = \sum_{(v, v') \in E} 1_{x_v = x_{v'}}
+  \]
+
+  In the general case, finding the proper $q$-coloring of a graph of size $N$ is NP complete\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring#Computational_complexity}}, assuming $2 < q < N$. The search space is the domain of all colorings $x$, which has a size exponential in $N$. It is therefore interesting relax the problem into an optimization problem. Using the cost function defined above:
+  \[
+    x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x)
+  \]
+  $x^*$ is a proper coloring when the minimum cost achieved is $0$. In the following section, we will describe how the Metropolis-Hastings algorithm can be used in this setting.
 
   \paragraph{Input data}
-  TODO: Describe construction of the random graph. Describe parameters. Show examples for different density parameters.
+  In this project, we use Erd\"{o}s-R\'{e}nyi random graphs to test the correctness of our implementation and convergence speeds. They are constructed as follows: for a given density parameter $c$, each pair of the $N$ vertices is connected with probability $c / N$. Examples are given in Figure~\ref{Fig:random-graph-examples}, where an initial random coloring is also visualized.
 
   \begin{figure}
       \centering
-      \begin{subfigure}[t]{3.8cm}
+      \begin{subfigure}[t]{4.5cm}
         \centering
-        \includegraphics[width=3.8cm]{figures/random-graph-50-5-5.pdf}
-        \caption{$c = 5$}\label{fig:1a}
-      \end{subfigure}
-      \begin{subfigure}[t]{3.8cm}
-        \centering
-        \includegraphics[width=3.8cm]{figures/random-graph-50-10-5.pdf}
-        \caption{$c = 10$}\label{fig:1a}
+        \includegraphics[width=4.5cm]{figures/random-graph-50-5-5.pdf}
+        \caption{$c = 5$}
       \end{subfigure}
       \quad
-      \begin{subfigure}[t]{3.8cm}
+      \begin{subfigure}[t]{4.5cm}
         \centering
-        \includegraphics[width=3.8cm]{figures/random-graph-50-20-5.pdf}
-        \caption{$c = 20$}\label{fig:1b}
+        \includegraphics[width=4.5cm]{figures/random-graph-50-10-5.pdf}
+        \caption{$c = 10$}
+      \end{subfigure}
+      \quad
+      \begin{subfigure}[t]{4.5cm}
+        \centering
+        \includegraphics[width=4.5cm]{figures/random-graph-50-20-5.pdf}
+        \caption{$c = 20$}
       \end{subfigure}
 
-    \label{Fig:random-graph-examples}
-    \caption{Examples of Erd\"{o}s-R\'{e}nyi random graphs for different values of the density parameter $c$. We also visualize an initial random coloring: edges in bold are in conflict, as they have the same color.}
+    \caption{Examples of Erd\"{o}s-R\'{e}nyi random graphs ($N = 50$ vertices) for different values of the density parameter $c$. We also visualize an initial random coloring: edges in bold represent a conflict between two vertices.}\label{Fig:random-graph-examples}
   \end{figure}
 
   % -----------------------------------------------------------------------------------
@@ -64,7 +79,7 @@
   % -----------------------------------------------------------------------------------
   \section*{Results}
   \paragraph{Implementation details}
-  TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration).
+  TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   \paragraph{Experiments}
   TODO: Explain the different schedules that we tried. Give specific numbers for each parameter (min / max temperature used, starting point, etc). Show results plot for each. Pick the best one and give intuition as to why it performs better than the others.
