@@ -26,7 +26,7 @@
   \maketitle
 
   \paragraph{Abstract}
-  We formulate the graph coloring problem as an optimization problem and use the Metropolis-Hastings algorithm to setup a Markov Chain that converges to a proper coloring. Simulated annealing is used to improve the convergence speed. In this report, we recall the problem statement and formulation, present the simulated annealing schemes devised, give relevant implementation details and finally present results.
+  We formulate the graph coloring problem as an optimization problem and use the Monte Carlo Markov Chain method to find proper colorings. Simulated annealing is used to improve the convergence speed. In this report, we recall the problem statement and formulation, present the simulated annealing schemes devised, give relevant implementation details and finally present results.
 
   % -----------------------------------------------------------------------------------
   \section*{Problem statement}
@@ -69,12 +69,11 @@
   \end{figure}
 
   % -----------------------------------------------------------------------------------
-  \section*{Metropolis solution}
+  \section*{MCMC solution}
   \paragraph{TODO} Describe how the optimization can be solved using Metropolis. Explain why we're convinced it will converge if there is a proper coloring.
 
-  % -----------------------------------------------------------------------------------
-  \section*{Simulated annealing}
-  \paragraph{TODO} Describe the intuition behind the ``temperature''. Define what's a schedule.
+  \paragraph{Simulated annealing}
+  Describe the intuition behind the ``temperature''. Define what's a schedule.
 
   % -----------------------------------------------------------------------------------
   \section*{Results}
@@ -89,7 +88,7 @@
       \includegraphics[width=8cm]{figures/cost-vs-graph-density.pdf}
     \end{center}
     \label{Fig:cost-vs-density}
-    \caption{Minimal energy achieved as a function of graph density for different values of $q$. Since both the input data and the process are random, we perform the optimization for 5 inputs for each set of parameters and show error bars.}
+    \caption{Minimal energy achieved as a function of graph density $c$ for different values of $q$. Since both the input data and the process are random, we perform the optimization for $5$ random inputs for each set of parameters and show error bars.}
   \end{figure}
 
 \end{document}
