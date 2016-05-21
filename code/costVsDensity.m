@@ -17,8 +17,10 @@ minimum_energies = zeros(nDraws, length(cValues), length(qValues));
 % For each curve
 for k = 1:length(qValues)
     q = qValues(k);
+    fprintf('Colors %d: ', q);
     
     for j = 1:length(cValues)
+        fprintf('#')
         c = cValues(j);
         
         for i = 1:nDraws
@@ -26,6 +28,7 @@ for k = 1:length(qValues)
             [~, minimum_energies(i, j, k)] = findColoring(G, q);
         end;
     end;
+    fprintf('\n');
 end;
 
 %% Plot resulting energies
