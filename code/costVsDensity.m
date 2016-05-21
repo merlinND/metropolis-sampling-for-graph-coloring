@@ -17,8 +17,10 @@ minimum_energies = zeros(nDraws, length(cValues), length(qValues));
 % For each curve
 for k = 1:length(qValues)
     q = qValues(k);
+    fprintf('Colors %d: ', q);
     
     for j = 1:length(cValues)
+        fprintf('#')
         c = cValues(j);
         
         for i = 1:nDraws
@@ -26,19 +28,20 @@ for k = 1:length(qValues)
             [~, minimum_energies(i, j, k)] = findColoring(G, q);
         end;
     end;
+    fprintf('\n');
 end;
 
 %% Plot resulting energies
 figure; hold on;
 legends = {};
 for k = 1:length(qValues)
-    m = mean(minimum_energies(:, :, k), 
+    m = mean(minimum_energies(:, :, k)); 
     u = std(minimum_energies(:, :, k), 1);
-    errorbar(cValues, m, u, '+');
+    errorbar(cValues, m, u, '-+');
     legends{end+1} = sprintf('q = %d colors', qValues(k));
 end;
 title_string = sprintf('Hmin(q, c) with N=%d edges (max iterations: %d)', ...
                        N, max_iterations);
-title(title_string);
+title(title_string); xlim([0 N]);
 xlabel('Graph density (c)'); ylabel('Minimum energy achieved');
 legend(legends, 'Location', 'NorthWest');
