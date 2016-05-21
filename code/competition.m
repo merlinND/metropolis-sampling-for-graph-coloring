@@ -19,13 +19,17 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
     minEnergy = Inf;
     while true
         fprintf('Attempt %d... ', i);
+        % TODO: allow a *very large* number of iterations and save results
+        % even before that max number of iterations is reached (requires
+        % putting all the loops in one file though).
         [X, E] = findColoring(competitionData.A, competitionData.q, maxIterations);
         if E < minEnergy
             save(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,E), 'X', 'E');
-            try
-                delete(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,minEnergy));
-            catch                
-            end
+            % Don't delete anything, just in case anything goes wrong
+            %try
+            %    delete(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,minEnergy));
+            %catch                
+            %end
             minEnergy = E;
         end
         fprintf('Energy: %d', E);
