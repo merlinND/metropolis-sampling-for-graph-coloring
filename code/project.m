@@ -1,6 +1,6 @@
 %% Random Walks SS2016 - Simmulated Annealing for Graph Coloring
-clear vars
-close all
+clear;
+close all;
 %rng(26);
 addpath(genpath('lib'));
 
@@ -10,19 +10,62 @@ competition_path = 'RW2016.mat';
 %% Setup
 
 % Generate test adjacency matrix
-N = 100;             % Number of edges
-q = 5;              % Number of colors
+N = 100;            % Number of edges
+q = 3;              % Number of colors
 beta = 0.2;         % Inverse temperature
 c = 3;              % Density
 
 % Erdos-Renyi graph
 G = randomGraph(N, c);
 
-%% Initial coloring
-x = randsample(q, N, true);
+%% Schedule
 
-visualizeGraph(G, x, 'Original graph');
-export_fig('/tmp/original.pdf');  % High-quality figure for report
+% Constant
+% getNextBeta = @constant;
+% beta_0 = 1000;
+% varargin = {beta_0};
+
+% Linear
+% getNextBeta = @linearBeta;
+% beta_0 = 100;
+% alpha = 0.01;
+% varargin = {beta_0, alpha};
+
+% Exponential
+% getNextBeta = @exponentialBeta;
+% beta_0 = 0;
+% c = 1000;
+% alpha = 1;
+% delta = 1;
+% tau = 50;
+% varargin = {beta_0, c, alpha, delta, tau};
+
+% Logarithmic
+% getNextBeta = @logarithmicBeta;
+% beta_0 = 10;
+% tau = 1;
+% varargin = {beta_0, tau};
+
+% Polynomial
+% getNextBeta = @polynomialBeta;
+% beta_0 = 10;
+% alpha = 2;
+% varargin = {beta_0, alpha};
+
+% Adaptive
+getNextBeta = @adaptiveExponentialBeta;
+beta_0 = 0;
+c = 1000;
+alpha = 1;
+delta = 1;
+tau = 50;
+varargin = {beta_0, c, alpha, delta, tau};
+
+%% Initial coloring
+% x = randsample(q, N, true);
+
+%visualizeGraph(G, x, 'Original graph');
+%export_fig('/tmp/original.pdf');  % High-quality figure for report
 %return;
 
 %% Metropolis
@@ -44,7 +87,7 @@ for i=1:n
     
     new_energy = H(G, x_new);
     delta_E = new_energy - current_energy;      % Energy difference
-    beta = getNextBeta(i,n);
+    beta = getNextBeta(i, n, varargin{:});
     % Accept if lower energy or with acceptance probability:
     accept = rand(1) <= min(1, exp(-beta * delta_E));
 
