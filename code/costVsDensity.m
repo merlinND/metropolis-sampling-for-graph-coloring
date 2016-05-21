@@ -35,13 +35,13 @@ end;
 figure; hold on;
 legends = {};
 for k = 1:length(qValues)
-    m = mean(minimum_energies(:, :, k), 
+    m = mean(minimum_energies(:, :, k)); 
     u = std(minimum_energies(:, :, k), 1);
-    errorbar(cValues, m, u, '+');
+    errorbar(cValues, m, u, '-+');
     legends{end+1} = sprintf('q = %d colors', qValues(k));
 end;
 title_string = sprintf('Hmin(q, c) with N=%d edges (max iterations: %d)', ...
                        N, max_iterations);
-title(title_string);
+title(title_string); xlim([0 N]);
 xlabel('Graph density (c)'); ylabel('Minimum energy achieved');
 legend(legends, 'Location', 'NorthWest');
