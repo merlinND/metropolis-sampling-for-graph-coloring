@@ -83,7 +83,7 @@
   TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   \paragraph{Experiments}  
-  We define in Table \ref{tab:schedules} five different schedules, each depending on some parameters that must be tuned. The adaptive schedule is similar to the exponential one, except that $\alpha$ is now a function of $t$ (typically, $\alpha(t) = 1/t$). 
+  We define in Table \ref{tab:schedules} five different schedules, each depending on some parameters that must be tuned. The adaptive schedule is similar to the exponential one, except that $\alpha$ is now a function of $t$ (for instance, $\alpha(t) = 1/t$). For each schedules, $t$ can be replaced by $t-\tau$ in order to keep the inverse temperature constant for a while before starting to increase it. In this case, we have $\beta_{\tau}(t)=\max\left(\beta_0, \beta(t-\tau)\right)$.
   
   TODO: Give specific numbers for each parameter (min / max temperature used, starting point, etc). Show results plot for each. Pick the best one and give intuition as to why it performs better than the others.
   
@@ -94,9 +94,9 @@
       	\hline
         \textbf{Schedules} & \textbf{Linear} &\textbf{Polynomial}  & \textbf{Logarithmic}& \textbf{Exponential} & \textbf{Adaptive} \\
         \hhline{|=||=|=|=|=|=|}
-        \textbf{$\beta(t)$} & $\beta_0 + \alpha t$ & $\beta_0 t^{\alpha}$ & $\beta_0 \log (t + \alpha)$, $\alpha > 1$ & $\beta_0\alpha^t$, $0 < \alpha < 1$ & $\beta_0\alpha(t)^t$ \\
+        \textbf{$\beta(t)$} & $\beta_0 + \alpha t$ & $\beta_0 t^{\alpha}$ & $\beta_0 \log (t + \alpha)$, $\alpha > 1$ & $\beta_0\alpha^{-t}$, $0 < \alpha < 1$ & $\beta_0\alpha(t)^t$ \\
       	\hline
-	\textbf{Parameters} & & & & & \\
+	\textbf{Parameters} & \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} \\
 	\hline
       \end{tabular}
     \end{center}

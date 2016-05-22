@@ -2,8 +2,8 @@ function beta = adaptiveExponentialBeta( i, n, varargin)
 %ADAPTIVEEXPONENTIALBETA Same as exponentialBeta, except that the base
 % \alpha depends on the time as well.
     
-    c = 1;
-    varargin{3} = c / i; % \alpha(t) = c / t
+    tau = varargin{3};
+    varargin{2} = 1 ./ (i - tau); % \alpha(t) = 1 / t
     beta = exponentialBeta(i, n, varargin{:});
 
 end
