@@ -1,15 +1,19 @@
 function beta = logarithmicBeta( i, n ,varargin )
 %LINEAR Linear increase of beta 
 %
-%   \beta(t) = \beta_0 * \log(t + \tau), \tau > 1 
+%   \beta(t) = \beta_0 * \log(t + \alpha), \tau > 1 
 %
 %   varargin{1}: Coefficient \beta_0
-%   varargin{2}: Base \alpha
-%   varargin{3}: Exponent coefficient \delta
+%   varargin{2}: Offset \alpha
+%   varargin{3}: Time delay \tau
 
     beta_0 = varargin{1};
-    tau = varargin{2};
-    beta = beta_0 * log(i + tau);
-
+    alpha = varargin{2};
+    tau = varargin{3};
+    if i < tau
+        beta = beta_0;
+    else
+        beta = beta_0 * log(i + alpha);
+    end
 end
 
