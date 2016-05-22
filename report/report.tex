@@ -36,7 +36,7 @@
     H(x) = \sum_{(v, v') \in E} 1_{x_v = x_{v'}}
   \]
 
-  In the general case, finding the proper $q$-coloring of a graph of size $N$ is NP complete\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring#Computational_complexity}}, assuming $2 < q < N$. The search space is the domain of all colorings $x$, which has a size exponential in $N$. It is therefore interesting relax the problem into an optimization problem. Using the cost function defined above:
+  In the general case, finding the proper $q$-coloring of a graph of size $N$ is NP complete\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring#Computational_complexity}}, assuming $2 < q < N$. The search space is the domain of all colorings $x$, which has a size exponential in $N$. It is therefore interesting to relax the problem into an optimization problem. Using the cost function defined above:
   \[
     x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x)
   \]
@@ -45,7 +45,7 @@
   \paragraph{Input data}
   In this project, we use Erd\"{o}s-R\'{e}nyi random graphs to test the correctness of our implementation and convergence speeds. They are constructed as follows: for a given density parameter $c$, each pair of the $N$ vertices is connected with probability $c / N$. Examples are given in Figure~\ref{Fig:random-graph-examples}, where an initial random coloring is also visualized.
 
-  \begin{figure}
+  \begin{figure}[h]
       \centering
       \begin{subfigure}[t]{4.5cm}
         \centering
@@ -73,7 +73,7 @@
   \paragraph{TODO} Describe how the optimization can be solved using Metropolis. Explain why we're convinced it will converge if there is a proper coloring.
 
   \paragraph{Simulated annealing}
-  Describe the intuition behind the ``temperature''. Define what's a schedule.
+  In order to find the global minimum of our cost function $H(x)$ that potentially contains several local minima, we make use of the \textit{simulated annealing}. This method simulates the physical process of cooling a solid such that when its structure is frozen, the minimum energy is reached. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a ``schedule'', a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$.
 
   % -----------------------------------------------------------------------------------
   \section*{Results}
