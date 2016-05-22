@@ -21,18 +21,18 @@ G = randomGraph(N, c);
 %% Schedule
 
 % Constant
-% getNextBeta = @constant;
+% schedule = @constant;
 % beta_0 = 1000;
 % varargin = {beta_0};
 
 % Linear
-% getNextBeta = @linearBeta;
+% schedule = @linearBeta;
 % beta_0 = 100;
 % alpha = 0.01;
 % varargin = {beta_0, alpha};
 
 % Exponential
-% getNextBeta = @exponentialBeta;
+% schedule = @exponentialBeta;
 % beta_0 = 0;
 % c = 1000;
 % alpha = 1;
@@ -41,19 +41,19 @@ G = randomGraph(N, c);
 % varargin = {beta_0, c, alpha, delta, tau};
 
 % Logarithmic
-% getNextBeta = @logarithmicBeta;
+% schedule = @logarithmicBeta;
 % beta_0 = 10;
 % tau = 1;
 % varargin = {beta_0, tau};
 
-% Polynomial
-% getNextBeta = @polynomialBeta;
+% Polynomial 
+% schedule = @polynomialBeta;
 % beta_0 = 10;
 % alpha = 2;
 % varargin = {beta_0, alpha};
 
 % Adaptive
-getNextBeta = @adaptiveExponentialBeta;
+schedule = @adaptiveExponentialBeta;
 beta_0 = 0;
 c = 1000;
 alpha = 1;
@@ -87,7 +87,7 @@ for i=1:n
     
     new_energy = H(G, x_new);
     delta_E = new_energy - current_energy;      % Energy difference
-    beta = getNextBeta(i, n, varargin{:});
+    beta = schedule(i, n, varargin{:});
     % Accept if lower energy or with acceptance probability:
     accept = rand(1) <= min(1, exp(-beta * delta_E));
 

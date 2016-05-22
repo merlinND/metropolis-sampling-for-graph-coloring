@@ -1,4 +1,4 @@
-function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations )
+function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, schedule, scheduleArgs )
 %FINDCOLORING Find a proper coloring for graph G using q colors
 %    Uses the Metropolis-Hastings sampling method, starting from a random
 %    initial coloring, to find a proper coloring of G.
@@ -28,7 +28,7 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations )
 
         new_cost = H(G, x_new);
         delta_E = new_cost - current_cost;      % Energy difference
-        beta = getNextBeta(i, max_iterations);
+        beta = schedule(i, max_iterations, scheduleArgs{:});
         % Accept if lower energy or with acceptance probability:
         accept = rand(1) <= min(1, exp(-beta * delta_E));
 

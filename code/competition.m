@@ -1,6 +1,7 @@
 function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIterations)
 % COMPETITION Find colorings with low energy for the Random Walks competition
-%   run from commandline as matlab -nodisplay -r "competition('../data/RW2016.mat','../data',1000);"
+%   run from commandline as 
+%       matlab -nodisplay -r "competition('../data/RW2016.mat','../data',1000);"
 
     if nargin<3
         maxIterations = 1000;
