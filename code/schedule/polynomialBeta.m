@@ -10,7 +10,7 @@ function beta = polynomialBeta( i ,varargin )
     beta_0 = varargin{1};
     alpha = varargin{2};
     tau = varargin{3};
-    beta = real((beta_0 * (i - tau)) .^ alpha);
+    beta = beta_0 * real((i - tau) .^ alpha);
 
 end
 

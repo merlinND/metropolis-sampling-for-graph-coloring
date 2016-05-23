@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 % \usepackage{subfigure}
 \usepackage{caption} 
+\usepackage{subcaption}
 \captionsetup[table]{skip=0pt}
 \usepackage{subcaption}
 \usepackage{url}
@@ -83,7 +84,7 @@
   TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   \paragraph{Experiments}  
-  We define in Table \ref{tab:schedules} five different schedules, each depending on some parameters that must be tuned. The adaptive schedule is similar to the exponential one, except that $\alpha$ is now a function of $t$ (for instance, $\alpha(t) = 1/t$). For each schedules, $t$ can be replaced by $t-\tau$ in order to keep the inverse temperature constant for a while before starting to increase it. In this case, we have $\beta_{\tau}(t)=\max\left(\beta_0, \beta(t-\tau)\right)$.
+  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t$, proportionally to the maximum number of iterations. The inverse temperature should approach infinity when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach 0 at this time. [The adaptive schedule is similar to the exponential one, except that $\alpha$ is now a function of $t$ (for instance, $\alpha(t) = 1/t$).] Moreover, in each case, $t$ can be replaced by $t-\tau$ in order to keep the inverse temperature constant for a while before starting to increase it.
   
   TODO: Give specific numbers for each parameter (min / max temperature used, starting point, etc). Show results plot for each. Pick the best one and give intuition as to why it performs better than the others.
   
@@ -92,18 +93,37 @@
     \def\arraystretch{1.5}
       \begin{tabular}{|c||c|c|c|c|c|}
       	\hline
-        \textbf{Schedules} & \textbf{Linear} &\textbf{Polynomial}  & \textbf{Logarithmic}& \textbf{Exponential} & \textbf{Adaptive} \\
+        \textbf{Schedules} & \textbf{Linear} & \textbf{Sublinear}  & \textbf{Polynomial}  & \textbf{Logarithmic}& \textbf{Exponential} \\
         \hhline{|=||=|=|=|=|=|}
-        \textbf{$\beta(t)$} & $\beta_0 + \alpha t$ & $\beta_0 t^{\alpha}$ & $\beta_0 \log (t + \alpha)$, $\alpha > 1$ & $\beta_0\alpha^{-t}$, $0 < \alpha < 1$ & $\beta_0\alpha(t)^t$ \\
+        \textbf{$\beta(t)$} & $\beta_0 + \alpha t$ & $\beta_0 t^{\alpha}$, $\alpha < 1$ & $\beta_0 t^{\alpha}$, $\alpha > 1$& $\beta_0 \log (t + \alpha)$, $\alpha \geq 1$ & $\beta_0\alpha^{-t}$, $0 < \alpha < 1$  \\
       	\hline
-	\textbf{Parameters} & \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=$ \\ $\alpha=$\end{tabular} \\
+	\textbf{Parameters} & \begin{tabular}[t]{@{}c@{}}$\beta_0=0.001$ \\ $\alpha=6$\\$\tau=0.05$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha= 0.5$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=2.5$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=1$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=0.01$ \\ $\alpha=0.0005$\\$\tau=0$\end{tabular} \\
 	\hline
       \end{tabular}
     \end{center}
-    \caption{Schedules for $\beta$. Each of these equations gives $\beta(t)$, the value of $\beta$ at time step $t$.}
+    \caption{Schedules for $\beta(t)$. The parameters are hand-tuned.}
     \label{tab:schedules}
   \end{table}
 
+  We hand-tune the parameters of each schedule in order to obtain good results. The shape of the schedules are shown in Figure \ref{fig:schedules_shape}. We then compare them against each other on a graph of size $N=250$ and $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. The results are displayed in Figure \ref{fig:schedules_evaluation}. The logarithmic schedule performs consistently better than the others.
+
+\begin{figure}[h]
+\centering
+\begin{subfigure}[t]{.5\linewidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{figures/schedules_shape.pdf}
+  \caption{Shape of the schedules described in Table \ref{tab:schedules}.}
+  \label{fig:schedules_shape}
+\end{subfigure}%
+\begin{subfigure}[t]{.5\linewidth}
+  \centering
+  \includegraphics[width=.8\linewidth]{figures/schedules_evaluation.pdf}
+  \caption{Results of the graph coloring on a graph of size $N=250$ and with $q=10$ colors. The logarithmic schedule performs the best.}
+  \label{fig:schedules_evaluation}
+\end{subfigure}
+\caption{Shape of schedules and comparison against each other.}
+\label{fig:schedules}
+\end{figure}
 
   \begin{figure}
     \begin{center}

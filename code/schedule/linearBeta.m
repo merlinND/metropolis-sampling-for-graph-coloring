@@ -1,4 +1,4 @@
-function beta = linearBeta( i,varargin )
+function beta = linearBeta( i, varargin )
 %LINEAR Linear increase of beta 
 %
 %   \beta(t) = \beta_0 + \alpha * t, \alpha > 0 
