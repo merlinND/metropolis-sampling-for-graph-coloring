@@ -3,15 +3,13 @@ clear;
 close all;
 %rng(26);
 addpath(genpath('lib'));
-
-competition_path = 'RW2016.mat';
-
+addpath(genpath('schedule'));
 
 %% Setup
 
 % Generate test adjacency matrix
-N = 100;            % Number of edges
-q = 3;              % Number of colors
+N = 250;            % Number of edges
+q = 4;              % Number of colors
 beta = 0.2;         % Inverse temperature
 c = 3;              % Density
 
@@ -19,47 +17,12 @@ c = 3;              % Density
 G = randomGraph(N, c);
 
 %% Schedule
-
-% Constant
-% schedule = @constant;
-% beta_0 = 1000;
-% varargin = {beta_0};
-
-% Linear
-% schedule = @linearBeta;
-% beta_0 = 100;
-% alpha = 0.01;
-% varargin = {beta_0, alpha};
-
-% Exponential
-% schedule = @exponentialBeta;
-% beta_0 = 0;
-% c = 1000;
-% alpha = 1;
-% delta = 1;
-% tau = 50;
-% varargin = {beta_0, c, alpha, delta, tau};
-
-% Logarithmic
-% schedule = @logarithmicBeta;
-% beta_0 = 10;
-% tau = 1;
-% varargin = {beta_0, tau};
-
-% Polynomial 
-% schedule = @polynomialBeta;
-% beta_0 = 10;
-% alpha = 2;
-% varargin = {beta_0, alpha};
-
-% Adaptive
-schedule = @adaptiveExponentialBeta;
-beta_0 = 0;
-c = 1000;
-alpha = 1;
-delta = 1;
-tau = 50;
-varargin = {beta_0, c, alpha, delta, tau};
+% Sublinear
+beta_0 = 10;
+alpha = 0.5;
+tau = 0;
+varargin = {beta_0, alpha, tau};
+schedule = getSchedule('sublinear');
 
 %% Initial coloring
 % x = randsample(q, N, true);
@@ -105,8 +68,10 @@ for i=1:n
 end
 toc;
 
+%% Show results
 % TODO: export properly colored graph and energy plot
-figure;
-plot(energies(1:i));
-title('Energy'); xlabel('Iterations'); ylabel('Cost');
+figure('Color',[1.0 1.0 1.0]);
+plot(energies(1:i), 'LineWidth', 2);
+title(sprintf('Evolution of cost over time (N = %d nodes, c = %d, q = %d)', N, c, q));
+xlabel('Iterations'); ylabel('Cost');
     
