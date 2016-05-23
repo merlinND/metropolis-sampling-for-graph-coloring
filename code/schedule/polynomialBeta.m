@@ -1,4 +1,4 @@
-function beta = polynomialBeta( i, n ,varargin )
+function beta = polynomialBeta( i ,varargin )
 %LINEAR Polynomial increase of beta 
 %
 %   \beta(t) = \beta_0 * t ^ \alpha
@@ -10,7 +10,7 @@ function beta = polynomialBeta( i, n ,varargin )
     beta_0 = varargin{1};
     alpha = varargin{2};
     tau = varargin{3};
-    beta = max(beta_0, beta_0 * real((i - tau) .^ alpha));
+    beta = real((beta_0 * (i - tau)) .^ alpha);
 
 end
 

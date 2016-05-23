@@ -28,7 +28,7 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, s
 
         new_cost = H(G, x_new);
         delta_E = new_cost - current_cost;      % Energy difference
-        beta = schedule(i, max_iterations, scheduleArgs{:});
+        beta = schedule(i/max_iterations, scheduleArgs{:});
         % Accept if lower energy or with acceptance probability:
         accept = rand(1) <= min(1, exp(-beta * delta_E));
 

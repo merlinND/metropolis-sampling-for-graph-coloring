@@ -1,4 +1,4 @@
-function beta = exponentialBeta( i, n ,varargin )
+function beta = exponentialBeta( i ,varargin )
 %LINEAR Exponential increase of beta 
 %
 %   \beta(t) = \beta_0 * \alpha ^ {-t}, 0 < \alpha < 1 

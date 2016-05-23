@@ -1,4 +1,4 @@
-function beta = logarithmicBeta( i, n ,varargin )
+function beta = logarithmicBeta( i ,varargin )
 %LINEAR Linear increase of beta 
 %
 %   \beta(t) = \beta_0 * \log(t + \alpha), \tau > 1 
