@@ -4,7 +4,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
 %       matlab -nodisplay -r "competition('../data/RW2016.mat','../data',1000);"
 
     if nargin<3
-        maxIterations = 1000;
+        maxIterations = 10000;
     end
     if nargin<2
         competitionOutputPath = '../data';
@@ -15,6 +15,13 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         
     warning('off','MATLAB:DELETE:FileNotFound');
     
+    % Logarithmic
+    beta_0 = 10;
+    alpha = 1;
+    tau = 0;
+    scheduleArgs = {beta_0, alpha, tau};
+    schedule = getSchedule('logarithmic');
+    
     competitionData = load(competitionDataPath);
     i=1;
     minEnergy = Inf;
@@ -23,7 +30,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         % TODO: allow a *very large* number of iterations and save results
         % even before that max number of iterations is reached (requires
         % putting all the loops in one file though).
-        [X, E] = findColoring(competitionData.A, competitionData.q, maxIterations);
+        [X, E] = findColoring(competitionData.A, competitionData.q, maxIterations, schedule, scheduleArgs);
         if E < minEnergy
             save(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,E), 'X', 'E');
             % Don't delete anything, just in case anything goes wrong
