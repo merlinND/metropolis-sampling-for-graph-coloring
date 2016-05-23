@@ -12,6 +12,8 @@ switch schedule_id
         schedule = @logarithmicBeta;
     case 'polynomial'
         schedule = @polynomialBeta;
+    case 'sublinear'
+        schedule = @polynomialBeta;
     case 'adaptive'
         schedule = @adaptiveExponentialBeta;
     otherwise

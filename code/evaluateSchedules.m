@@ -20,34 +20,36 @@ nDraws = 5;
 % Linear
 beta_0 = 0.001;
 alpha = 6;
-tau = 0.3;
+tau = 0.05; 
 linearArgs = {beta_0, alpha, tau};
-% Exponential
-beta_0 = 0.1;
-alpha = 0.005;
-tau = 0.1;
-exponentialArgs = {beta_0, alpha, tau};
+% Sublinear
+beta_0 = 10;
+alpha = 0.5;
+tau = 0;
+sublinearArgs = {beta_0, alpha, tau};
+% Polynomial 
+beta_0 = 10;
+alpha = 2.5;
+tau = 0;
+polynomialArgs = {beta_0, alpha, tau};
 % Logarithmic
 beta_0 = 10;
 alpha = 1;
 tau = 0;
 logarithmicArgs = {beta_0, alpha, tau};
-% Polynomial 
-beta_0 = 3;
-alpha = 2;
+% Exponential
+beta_0 = 0.01;
+alpha = 0.0005;
 tau = 0;
-polynomialArgs = {beta_0, alpha, tau};
-% Adaptive exponential
-beta_0 = 0;
-alpha = 1;
-tau = 0;
-adaptiveArgs = {beta_0, c, alpha, tau};
+exponentialArgs = {beta_0, alpha, tau};
 
 schedules = {'linear', linearArgs;
-             'exponential', exponentialArgs;
-             'logarithmic', logarithmicArgs;
+             'sublinear', sublinearArgs;
              'polynomial', polynomialArgs;
-             'adaptive', adaptiveArgs};
+             'logarithmic', logarithmicArgs;
+             'exponential', exponentialArgs;};
+         
+plotSchedules(schedules);
 
 minimum_energies = zeros(nDraws, length(cValues), length(q));
 % For each curve
@@ -80,6 +82,9 @@ for k = 1:length(schedules)
 end;
 title_string = sprintf('Hmin(q=%d, c) with N=%d edges (max iterations: %d)', ...
                        q, N, max_iterations);
-title(title_string); xlim([0 cValues(end)]);
-xlabel('Graph density (c)'); ylabel('Minimum energy achieved');
-legend(legends, 'Location', 'NorthWest');
+title(title_string, 'FontSize', 16); xlim([0 cValues(end)]);
+xlabel('Graph density (c)', 'FontSize', 16); ylabel('Minimum energy achieved', 'FontSize', 16);
+legend(legends, 'Location', 'NorthWest', 'FontSize', 16);
+set(gcf,'color','w');
+export_fig('/tmp/schedules_evaluation.pdf');
+savefig('schedules_evaluation.fig')
