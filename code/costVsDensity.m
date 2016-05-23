@@ -42,7 +42,8 @@ for k = 1:length(qValues)
 end;
 
 %% Plot resulting energies
-figure; hold on;
+figure('Color',[1.0 1.0 1.0]);
+hold on;
 legends = {};
 for k = 1:length(qValues)
     m = mean(minimum_energies(:, :, k)); 
@@ -55,3 +56,5 @@ title_string = sprintf('Hmin(q, c) with N=%d nodes (max iterations: %d)', ...
 title(title_string); xlim([0 N]);
 xlabel('Graph density (c)'); ylabel('Minimum energy achieved');
 legend(legends, 'Location', 'NorthWest');
+yLimits = ylim();
+ylim([0 yLimits(2)]);
