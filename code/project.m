@@ -72,6 +72,6 @@ toc;
 % TODO: export properly colored graph and energy plot
 figure('Color',[1.0 1.0 1.0]);
 plot(energies(1:i), 'LineWidth', 2);
-title(sprintf('Evolution of cost over time (N = %d nodes, c = %d, q = %d)', N, c, q));
-xlabel('Iterations'); ylabel('Cost');
-    
+title(sprintf('Evolution of cost over time (N = %d nodes, c = %d, q = %d)', N, c, q), 'FontSize', 16);
+xlabel('Iterations', 'FontSize', 16); ylabel('Cost', 'FontSize', 16);
+export_fig('/tmp/random-walk-example.pdf')

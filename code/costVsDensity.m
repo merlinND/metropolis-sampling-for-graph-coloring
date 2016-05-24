@@ -53,8 +53,9 @@ for k = 1:length(qValues)
 end;
 title_string = sprintf('Hmin(q, c) with N=%d nodes (max iterations: %d)', ...
                        N, max_iterations);
-title(title_string); xlim([0 N]);
-xlabel('Graph density (c)'); ylabel('Minimum energy achieved');
-legend(legends, 'Location', 'NorthWest');
+title(title_string, 'FontSize', 16); xlim([0 N]);
+xlabel('Graph density (c)', 'FontSize', 16); ylabel('Minimum energy achieved', 'FontSize', 16);
+legend(legends, 'Location', 'NorthWest', 'FontSize', 16);
 yLimits = ylim();
 ylim([0 yLimits(2)]);
+export_fig('/tmp/cost-vs-graph-density.pdf')
