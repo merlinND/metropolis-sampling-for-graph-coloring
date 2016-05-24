@@ -31,21 +31,21 @@
   \maketitle
 
   \paragraph{Abstract}
-  We formulate the graph coloring problem as an optimization problem and use the Markov Chain Monte~Carlo method to find proper colorings. Simulated annealing is used to improve the convergence speed and avoid local minima. In this report, we recall the problem statement and formulation, present the simulated annealing schemes devised and present results.
+  We formulate the graph coloring problem as an optimization problem and use the Markov Chain Monte~Carlo method to find proper colorings. Simulated annealing is used to improve the convergence speed and avoid local minima. In this report, we recall the problem statement and formulation, describe the simulated annealing schemes devised and present results.
 
   % -----------------------------------------------------------------------------------
   \section*{Problem statement}
   \paragraph{Proper $q$-colorings}
-  Let $G = (V, E)$ a graph with $|V| = N$. A \emph{coloring} using $q$ colors is an assignment $x \in \{ 1, \ldots, q \}^N$ for all elements in $V$. A \emph{proper} $q$-coloring is a coloring such that no two adjacent vertices have the same color: $(v, v') \in E \Rightarrow x_v \neq x_{v'}$. From this definition, we can define a cost function (Hamiltonian) to evaluate the ``quality'' of a given coloring:
+  Let $G = (V, E)$ a graph with $|V| = N$ vertices. A \emph{coloring} using $q$ colors is an assignment $x \in \{ 1, \ldots, q \}^N$ for all elements in $V$. A \emph{proper} $q$-coloring is a coloring such that no two adjacent vertices have the same color: $(v, v') \in E \Rightarrow x_v \neq x_{v'}$. From this definition, we can define a cost function (Hamiltonian) to evaluate the ``quality'' of a given coloring:
   \[
-    H(x) = \sum_{(v, v') \in E} \mathbb{1}_{x_v = x_{v'}}
+    H(x) = \sum_{(v, v') \in E} \mathbb{1}_{x_v = x_{v'}}.
   \]
 
   In the general case, finding the proper $q$-coloring of a graph of size $N$ is NP complete\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring\#Computational_complexity}}, assuming $2 < q < N$. The search space is the domain of all colorings $x$, which has a size exponential in $N$. It is therefore interesting to relax the problem into an optimization problem. Using the cost function defined above:
   \[
-    x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x)
+    x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x).
   \]
-  $x^*$ is a proper coloring when the minimum cost achieved is $0$. In the following section, we will describe how the Metropolis-Hastings algorithm can be used in this setting.
+  We have, then, that $x^*$ is a proper coloring when the minimum cost achieved is $0$. In the following section, we will describe how the Metropolis-Hastings algorithm can be used in this setting.
 
   \paragraph{Input data}
   In this project, we use Erd\H{o}s-R\'{e}nyi random graphs to test the correctness of our implementation and convergence speeds. They are constructed as follows: for a given density parameter $c$, each pair of the $N$ vertices is connected with probability $c / N$. Examples are given in Figure~\ref{Fig:random-graph-examples}, where an initial random coloring is also visualized.
@@ -77,7 +77,7 @@
   \section*{MCMC solution}
   Once the graph coloring problem is formulated as an optimization problem, we are able to bring it into the MCMC framework. We setup a simple Markov Chain over the space of colorings. Transitions correspond to changing one vertex (chosen uniformly at random) to a different color (chosen uniformly at random). After generating a proposed transition, we compute the change in cost:
   \[
-    \Delta = H(x^{new} - H(x^t)
+    \Delta = H(x^{new} - H(x^t).
   \]
   The proposed transition is performed with some acceptance probability, defined below. This process is repeated until a proper coloring is found ($H(x) = 0$) or a maximum number of iterations is reached.
 
@@ -87,12 +87,12 @@
     \centering
     \begin{subfigure}[t]{.49\linewidth}
       \centering
-      \includegraphics[width=7cm]{figures/random-walk-example.pdf}
+      \includegraphics[width=.8\linewidth]{figures/random-walk-example.pdf}
       \caption{}\label{Fig:random-walk-example}
     \end{subfigure}
     \begin{subfigure}[t]{.49\linewidth}
       \centering
-      \includegraphics[width=7cm]{figures/cost-vs-graph-density.pdf}
+      \includegraphics[width=.8\linewidth]{figures/cost-vs-graph-density.pdf}
       \caption{}\label{Fig:cost-vs-density}
     \end{subfigure}
     \caption{Left: evolution of the cost over time for an example graph. Right: minimal energy achieved as a function of graph density $c$ for different values of $q$. Since both the input data and the process are random, we perform the optimization for $5$ random inputs for each set of parameters and show error bars.}
@@ -101,7 +101,7 @@
   \paragraph{Simulated annealing}
   In order to find the global minimum of our cost function $H(x)$ that potentially contains several local minima, we make use of the \textit{simulated annealing}. This method simulates the physical process of cooling a solid such that when its structure is frozen, the minimum energy configuration is reached. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a ``schedule'', a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
   \[
-    p = \exp(- \beta(t) \times \Delta)
+    p = \exp(- \beta(t) \times \Delta).
   \]
 
   % -----------------------------------------------------------------------------------
@@ -111,7 +111,7 @@
   % TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   % \paragraph{Experiments}
-  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t \in [0, 1]$, normalized by the maximum number of iterations. The inverse temperature should approach ``infinity'' when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach $0$ at this time. [The adaptive schedule is similar to the exponential one, except that $\alpha$ is now a function of $t$ (for instance, $\alpha(t) = 1/t$).] Moreover, in each case, $t$ can be replaced by $t-\tau$ in order to keep the temperature constant for at the start of the simulation before starting to increase it.
+  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t \in [0, 1]$, normalized by the maximum number of iterations. The inverse temperature $\beta(t)$ should approach ``infinity'' when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach $0$ at this time. Moreover, in each case, a time delay $\tau$ can be introduced ($t$ becomes $t-\tau$) in order to keep $\beta(t)$ constant at the beginning of the simulation before starting to increase it. However, in most cases, we don't notice an increase in the performances by doing so.
 
   \begin{table}[h]
     \begin{center}
@@ -130,7 +130,7 @@
     \label{tab:schedules}
   \end{table}
 
-  We hand-tune the parameters of each schedule in order to obtain good results. The shape of the schedules are shown in Figure \ref{fig:schedules_shape}. We then compare them against each other on a graph of size $N=250$ and $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. The results are displayed in Figure \ref{fig:schedules_evaluation}. The ``square root'' schedule performs consistently better than the others. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
+  We hand-tune the parameters of each schedule in order to obtain good results. The shape of the schedules are shown in Figure \ref{fig:schedules_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. The results are displayed in Figure \ref{fig:schedules_evaluation}. The sublinear schedule (here, a square root) performs consistently better than the others. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
 
   \begin{figure}[h]
     \centering
