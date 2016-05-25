@@ -1,9 +1,10 @@
-function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, schedule, scheduleArgs )
+function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, discretized, schedule, scheduleArgs )
 %FINDCOLORING Find a proper coloring for graph G using q colors
 %    Uses the Metropolis-Hastings sampling method, starting from a random
 %    initial coloring, to find a proper coloring of G.
 % Returns x (Nx1 vector), the coloring at with minimum cost found,
 % as well as the associated cost.
+    discSch = @(x) log(7*x+1) / log(8);
 
     if nargin < 3
         max_iterations = 5000;
@@ -25,10 +26,18 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, s
         if v_c >= x(v), v_c = v_c+1; end  % Assign color different from current
         x_new = x;
         x_new(v) = v_c;
-
+        
+        t = i / max_iterations;
+        if discretized
+            % Discretize the time to have steps
+            t = discSch(t);
+            binBounds = linspace(0,1,7);
+            t = discretize(t, binBounds, binBounds(2:end));
+        end
+        
         new_cost = H(G, x_new);
         delta_E = new_cost - current_cost;      % Energy difference
-        beta = schedule(i/max_iterations, scheduleArgs{:});
+        beta = schedule(t, scheduleArgs{:});
         % Accept if lower energy or with acceptance probability:
         accept = rand(1) <= min(1, exp(-beta * delta_E));
 

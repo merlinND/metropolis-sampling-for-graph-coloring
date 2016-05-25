@@ -1,23 +1,30 @@
 function [ ] = plotSchedules( schedules )
-%PLOTSCHEDULESF Summary of this function goes here
+%PLOTSCHEDULES Summary of this function goes here
 %   Detailed explanation goes here
 discSch = @(x) log(7*x+1) / log(8);
 
 figure; hold on;
-x = linspace(0, 1, 1000);
+t = linspace(0, 1, 1000);
 legends = {};
 for k = 1:length(schedules)
     schedule_id = schedules{k, 1};
     schedule = getSchedule(schedule_id);
     scheduleArgs = schedules{k, 2};
 
-    newx = discSch(x);
-    binBounds = linspace(0,1,10);
-    newx = discretize(newx, binBounds, binBounds(2:end));
-    betas = schedule(newx, scheduleArgs{:});
+    if k < length(schedules)
+        % Discretize the time to have steps
+        t = discSch(t);
+        binBounds = linspace(0,1,7);
+        t = discretize(t, binBounds, binBounds(2:end));
+    end
 
-    plot(x, betas);
-    legends{end+1} = sprintf('%s', schedules{k, 1});
+    plot(t, betas);
+    
+    if k == length(schedules)
+        legends{end + 1} = sprintf('sublinear continuous');
+    else
+        legends{end+1} = sprintf('%s', schedules{k, 1});
+    end
 end;
 title('Schedules for \beta(t)', 'FontSize', 16); xlim([0 1]);
 xlabel('Relative time (t)', 'FontSize', 16); ylabel('Inverse temperature (\beta)', 'FontSize', 16);

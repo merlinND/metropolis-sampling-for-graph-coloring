@@ -11,7 +11,7 @@
 max_iterations = 5000;
 N = 250;
 q = 10;
-cValues = linspace(0, N/4, 10);
+cValues = linspace(3, N/4, 10);
 % Since we're working with random graphs, we make several random draws
 % to make sure that we obtain relevant data points.
 nDraws = 5;
@@ -20,7 +20,7 @@ nDraws = 5;
 % Linear
 beta_0 = 0.001;
 alpha = 6;
-tau = 0.05; 
+tau = 0; 
 linearArgs = {beta_0, alpha, tau};
 % Sublinear
 beta_0 = 10;
@@ -42,14 +42,20 @@ beta_0 = 0.01;
 alpha = 0.0005;
 tau = 0;
 exponentialArgs = {beta_0, alpha, tau};
+% Sublinear  continuous
+beta_0 = 10;
+alpha = 0.5;
+tau = 0;
+sublinearContinuousArgs = {beta_0, alpha, tau};
 
 schedules = {'linear', linearArgs;
              'sublinear', sublinearArgs;
              'polynomial', polynomialArgs;
              'logarithmic', logarithmicArgs;
-             'exponential', exponentialArgs;};
+             'exponential', exponentialArgs;
+             'sublinear', sublinearArgs;};
          
-plotSchedules(schedules);
+% plotSchedules(schedules);
 
 minimum_energies = zeros(nDraws, length(cValues), length(q));
 % For each curve
@@ -59,12 +65,17 @@ for k = 1:length(schedules)
     scheduleArgs = schedules{k, 2};
     fprintf('Schedule %s: ', schedule_id);
     
+    discretized = true;
+    if k == length(schedules)
+        discretized = false;
+    end
+    
     for j = 1:length(cValues)
         c = cValues(j);
         
         for i = 1:nDraws
             G = randomGraph(N, c);
-            [~, minimum_energies(i, j, k)] = findColoring(G, q, max_iterations, schedule, scheduleArgs);
+            [~, minimum_energies(i, j, k)] = findColoring(G, q, max_iterations, discretized, schedule, scheduleArgs);
         end;
         fprintf('#');
     end;
@@ -78,7 +89,11 @@ for k = 1:length(schedules)
     m = mean(minimum_energies(:, :, k)); 
     u = std(minimum_energies(:, :, k), 1);
     errorbar(cValues, m, u, '-+');
-    legends{end+1} = sprintf('%s', schedules{k, 1});
+    if k == length(schedules)
+        legends{end + 1} = sprintf('sublinear continuous');
+    else
+        legends{end+1} = sprintf('%s', schedules{k, 1});
+    end
 end;
 title_string = sprintf('Hmin(q=%d, c) with N=%d edges (max iterations: %d)', ...
                        q, N, max_iterations);
@@ -87,4 +102,4 @@ xlabel('Graph density (c)', 'FontSize', 16); ylabel('Minimum energy achieved', '
 legend(legends, 'Location', 'NorthWest', 'FontSize', 16);
 set(gcf,'color','w');
 export_fig('/tmp/schedules_evaluation.pdf');
-savefig('schedules_evaluation.fig')
+savefig('schedules_evaluation.fig');
