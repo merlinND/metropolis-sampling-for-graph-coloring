@@ -1,6 +1,6 @@
 \documentclass{article}
 
-\usepackage[margin=3cm]{geometry}
+\usepackage[margin=2.5cm]{geometry}
 \usepackage{graphicx}
 % \usepackage{subfigure}
 \usepackage{caption}
@@ -149,6 +149,12 @@
     \caption{Shape of schedules and comparison against each other.}
     \label{fig:schedules}
   \end{figure}
+
+
+  % -----------------------------------------------------------------------------------
+  \section*{Conclusion}
+  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our optimization handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that slowly growing functions work best in our setup.
+  
 
 \end{document}
 
