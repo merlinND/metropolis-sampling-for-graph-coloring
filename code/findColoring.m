@@ -12,10 +12,11 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, d
 
     % Size of the graph
     N = size(G, 1);
+    [adjI, adjJ] = find(G);
     
     % Random initial coloring
     x = randsample(q, N, true);
-    current_cost = H(G, x);
+    current_cost = H(adjI, adjJ, x);
     minimum_cost = current_cost;
     best_coloring = x;
 
@@ -35,7 +36,7 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, d
             t = discretize(t, binBounds, binBounds(2:end));
         end
         
-        new_cost = H(G, x_new);
+        new_cost = H(adjI, adjJ, x_new);
         delta_E = new_cost - current_cost;      % Energy difference
         beta = schedule(t, scheduleArgs{:});
         % Accept if lower energy or with acceptance probability:

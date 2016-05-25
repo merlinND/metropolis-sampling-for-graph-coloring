@@ -81,7 +81,7 @@
   \]
   The proposed transition is performed with some acceptance probability, defined below. This process is repeated until a proper coloring is found ($H(x) = 0$) or a maximum number of iterations is reached.
 
-  Figure~\ref{Fig:random-walk-example} shows the evolution of cost $H(x)$ over the course of an example walk. When enough colors $q$ are available w.r.t. the density $c$ of the graph, the walk converges to a proper coloring in few iterations, which run fast even on a commodity laptop: for $N \approx 1000$, the search completes $5000$ iterations in less than 3 minutes. Note that most of the computation time dedicated to the evaluation of the cost function. We plot in Figure~\ref{Fig:cost-vs-density} the relationship between the best cost achieved and the graph's density, for different values of $q$.
+  Figure~\ref{Fig:random-walk-example} shows the evolution of cost $H(x)$ over the course of an example walk. When enough colors $q$ are available w.r.t. the density $c$ of the graph, the walk converges to a proper coloring in few iterations, which run fast even on a commodity laptop: for $N \approx 10000$, the search completes $5000$ iterations in about $20$ seconds. Note that most of the computation time dedicated to the evaluation of the cost function. We plot in Figure~\ref{Fig:cost-vs-density} the relationship between the best cost achieved and the graph's density, for different values of $q$.
 
   \begin{figure}[h]
     \centering
@@ -159,7 +159,7 @@
 
   % -----------------------------------------------------------------------------------
   \section*{Conclusion}
-  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our implementation handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than their continuous counterparts. The sublinear schedule, and generally, slow-growing functions of time, tend to perform best. We expect that even better performance can be achieved by tuning the parameters further.
+  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our implementation handles inputs of size $N=10000$ run over 5000 iterations in less than $25$ seconds on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than their continuous counterparts. The sublinear schedule, and generally, slow-growing functions of time, tend to perform best. We expect that even better performance can be achieved by tuning the parameters further.
 
 \end{document}
 

@@ -29,8 +29,9 @@ for i = 1:length(nValues)
     for j = 1:length(cc)
         c = cc(j);
         G = randomGraph(N, c);
+        [adjI, adjJ] = find(G);
         x = randsample(q, N, true);
-        costs(i, j) = H(G, x) / N;
+        costs(i, j) = H(adjI, adjJ, x) / N;
     end;
 end;
 

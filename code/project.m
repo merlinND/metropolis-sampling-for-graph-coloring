@@ -8,13 +8,14 @@ addpath(genpath('schedule'));
 %% Setup
 
 % Generate test adjacency matrix
-N = 250;            % Number of edges
+N = 1000;            % Number of edges
 q = 4;              % Number of colors
 beta = 0.2;         % Inverse temperature
-c = 3;              % Density
+c = 30;              % Density
 
 % Erdos-Renyi graph
 G = randomGraph(N, c);
+[adjI, adjJ] = find(G);
 
 %% Schedule
 % Sublinear
@@ -25,7 +26,7 @@ varargin = {beta_0, alpha, tau};
 schedule = getSchedule('sublinear');
 
 %% Initial coloring
-% x = randsample(q, N, true);
+%x = randsample(q, N, true);
 
 %visualizeGraph(G, x, 'Original graph');
 %export_fig('/tmp/original.pdf');  % High-quality figure for report
@@ -33,10 +34,10 @@ schedule = getSchedule('sublinear');
 
 %% Metropolis
 
-n = 5000;  % Number of iterations
+n = 50000;  % Number of iterations
 x = randsample(q, N, true);
 
-current_energy = H(G, x);
+current_energy = H(adjI, adjJ, x);
 energies = zeros(n, 1);
 
 % Metropolis iteration
@@ -48,7 +49,7 @@ for i=1:n
     x_new = x;
     x_new(v) = v_c;
     
-    new_energy = H(G, x_new);
+    new_energy = H(adjI, adjJ, x_new);
     delta_E = new_energy - current_energy;      % Energy difference
     beta = schedule(i, n, varargin{:});
     % Accept if lower energy or with acceptance probability:
@@ -69,7 +70,6 @@ end
 toc;
 
 %% Show results
-% TODO: export properly colored graph and energy plot
 figure('Color',[1.0 1.0 1.0]);
 plot(energies(1:i), 'LineWidth', 2);
 title(sprintf('Evolution of cost over time (N = %d nodes, c = %d, q = %d)', N, c, q), 'FontSize', 16);
