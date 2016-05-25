@@ -9,12 +9,14 @@
 % \usepackage{url}
 \usepackage{hyperref}
 \usepackage{hhline}
+\usepackage{xcolor}
 
 \usepackage{algorithm}
 \usepackage{amsmath}
 \usepackage{ bbold }
 \DeclareMathOperator*{\argmin}{arg\,min}
 
+\newcommand{\rbc}[1]{\textcolor{blue}{\small [#1]}} % For final version change to \newcommand{\rbc}[1]{}
 
 \title{Simulated Annealing Algorithm for Graph Coloring\\Random Walks course project}
 \date{May 25, 2016}
@@ -95,11 +97,11 @@
       \includegraphics[width=.8\linewidth]{figures/cost-vs-graph-density.pdf}
       \caption{}\label{Fig:cost-vs-density}
     \end{subfigure}
-    \caption{Left: evolution of the cost over time for an example graph. Right: minimal energy achieved as a function of graph density $c$ for different values of $q$. Since both the input data and the process are random, we perform the optimization for $5$ random inputs for each set of parameters and show error bars.}
+    \caption{Left: evolution of the cost over time for an example graph. Right: minimal energy achieved as a function of graph density $c$ for different values of $q$ under a sublinear simulated annealing schedule. Since both the input data and the process are random, we perform the optimization for $5$ random inputs for each set of parameters and show error bars.}
   \end{figure}
 
   \paragraph{Simulated annealing}
-  In order to find the global minimum of our cost function $H(x)$, that potentially contains several local minima, we make use of the \textit{simulated annealing} metaheuristic. This method simulates the physical process of cooling a solid such that when its structure is frozen, the minimum energy configuration is reached. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a ``schedule'', a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
+  In order to find the global minimum of our cost function $H(x)$, which potentially contains several local minima, we make use of the \textit{simulated annealing} metaheuristic. This method simulates the physical process of applying temperature to a metal and then progressively cooling it down, in order to achieve a crystal configuration with lower energy than the original, which improves some properties of the material. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a \emph{schedule}, a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
   \[
     p = \exp(- \beta(t) \cdot \Delta)
   \]
@@ -160,6 +162,8 @@
   % -----------------------------------------------------------------------------------
   \section*{Conclusion}
   In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our implementation handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than most continuous ones. The sublinear continuous schedule provide results that are comparable to the discretized ones. We expect that even better performance can be achieved by tuning the parameters further.
+
+  \rbc{So which schedule are we recommending as the best?}
 
 \end{document}
 
