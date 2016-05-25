@@ -111,8 +111,8 @@
   % TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   % \paragraph{Experiments}
-  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t \in [0, 1]$, normalized by the maximum number of iterations. The inverse temperature $\beta(t)$ should approach ``infinity'' when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach $0$ at this time. Moreover, in each case, a time delay $\tau$ can be introduced ($t$ becomes $t-\tau$) in order to keep $\beta(t)$ constant at the beginning of the simulation before starting to increase it. However, in most cases, we don't notice an increase in the performances by doing so.
-
+  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t \in [0, 1]$, normalized by the maximum number of iterations. The inverse temperature $\beta(t)$ should approach ``infinity'' when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach $0$ at this time. Moreover, we also create a discretized version of each schedule in order to keep the value of $\beta$ constant for some time before increasing it.
+   
   \begin{table}[h]
     \begin{center}
     \def\arraystretch{1.5}
@@ -122,7 +122,7 @@
         \hhline{|=||=|=|=|=|=|}
         \textbf{$\beta(t)$} & $\beta_0 + \alpha t$ & $\beta_0 t^{\alpha}$, $\alpha < 1$ & $\beta_0 t^{\alpha}$, $\alpha > 1$& $\beta_0 \log (t + \alpha)$, $\alpha \geq 1$ & $\beta_0\alpha^{-t}$, $0 < \alpha < 1$  \\
       	\hline
-	\textbf{Parameters} & \begin{tabular}[t]{@{}c@{}}$\beta_0=0.001$ \\ $\alpha=6$\\$\tau=0.05$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha= 0.5$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=2.5$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=1$\\$\tau=0$\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=0.01$ \\ $\alpha=0.0005$\\$\tau=0$\end{tabular} \\
+	\textbf{Parameters} & \begin{tabular}[t]{@{}c@{}}$\beta_0=0.001$ \\ $\alpha=6$\\\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha= 0.5$\\\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=2.5$\\\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=10$ \\ $\alpha=1$\\\end{tabular} &  \begin{tabular}[t]{@{}c@{}}$\beta_0=0.01$ \\ $\alpha=0.0005$\\\end{tabular} \\
 	\hline
       \end{tabular}
     \end{center}
@@ -130,20 +130,26 @@
     \label{tab:schedules}
   \end{table}
 
-  We hand-tune the parameters of each schedule in order to obtain good results. The shape of the schedules are shown in Figure \ref{fig:schedules_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. The results are displayed in Figure \ref{fig:schedules_evaluation}. The sublinear schedule (here, a square root) performs consistently better than the others. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
+  We hand-tune the parameters of each schedule in order to obtain good results. The shape of the schedules are shown in Figure \ref{fig:schedules_linear_shape} and \ref{fig:schedules_discretized_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. Some results are displayed in Figure \ref{fig:schedules_evaluation}. The discretized schedules all perform better than the linear ones. The continuous sublinear schedule (here, a square root) is the best linear schedule and is compared against the discretized schedules. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
 
   \begin{figure}[h]
     \centering
-    \begin{subfigure}[t]{.5\linewidth}
+    \begin{subfigure}[t]{.33\linewidth} % Linear
       \centering
-      \includegraphics[width=.8\linewidth]{figures/schedules_shape.pdf}
-      \caption{Shape of the schedules described in Table \ref{tab:schedules}.}
-      \label{fig:schedules_shape}
+      \includegraphics[width=1\linewidth]{figures/schedules_linear_shape.pdf}
+      \caption{Schedules described in Table \ref{tab:schedules}.}
+      \label{fig:schedules_linear_shape}
     \end{subfigure}%
-    \begin{subfigure}[t]{.5\linewidth}
+     \begin{subfigure}[t]{.33\linewidth} % Discretized
       \centering
-      \includegraphics[width=.8\linewidth]{figures/schedules_evaluation.pdf}
-      \caption{Results of the graph coloring on a graph of size $N=250$ and with $q=10$ colors. The ``square root'' schedule performs best.}
+      \includegraphics[width=1\linewidth]{figures/schedules_discretized_shape.pdf}
+      \caption{Discretized schedules.}
+      \label{fig:schedules_discretized_shape}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\linewidth} % Evaluation
+      \centering
+      \includegraphics[width=1\linewidth]{figures/schedules_evaluation.pdf}
+      \caption{Results of the graph coloring on a graph of size $N=250$ and with $q=10$ colors.}
       \label{fig:schedules_evaluation}
     \end{subfigure}
     \caption{Shape of schedules and comparison against each other.}
@@ -153,7 +159,7 @@
 
   % -----------------------------------------------------------------------------------
   \section*{Conclusion}
-  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our optimization handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that slowly growing functions work best in our setup.
+  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our optimization handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than the linear ones. The sublinear continuous schedule provide results that are comparable to the discretized ones.
   
 
 \end{document}
