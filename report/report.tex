@@ -103,7 +103,7 @@
   \paragraph{Simulated annealing}
   In order to find the global minimum of our cost function $H(x)$, which potentially contains several local minima, we make use of the \textit{simulated annealing}. This method simulates the physical process of applying temperature to a metal and then progressively cooling it down, in order to achieve a crystal configuration with lower energy than the original, which improves some properties of the material. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a \emph{schedule}, a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
   \[
-    p = \exp(- \beta(t) \times \Delta).
+    a = \exp(- \beta(t) \times \Delta).
   \]
 
   % -----------------------------------------------------------------------------------
@@ -132,7 +132,7 @@
     \label{tab:schedules}
   \end{table}
 
-  We optimize the parameters of each schedule manually. The shape of the schedules are shown in Figure \ref{fig:schedules_linear_shape} and \ref{fig:schedules_discretized_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=15$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. Some results are displayed in Figure \ref{fig:schedules_evaluation}. The discretized schedules all perform better than the continuous ones. The continuous sublinear schedule (here, a square root) is the best continuous schedule and is compared against the discretized schedules. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
+  We optimize the parameters of each schedule manually. The shape of the schedules are shown in Figure \ref{fig:schedules_linear_shape} and \ref{fig:schedules_discretized_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=10$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. Some results are displayed in Figure \ref{fig:schedules_evaluation}. The discretized schedules all perform better than the continuous ones. The continuous sublinear schedule (here, a square root) is the best continuous schedule and is compared against the discretized schedules. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
 
   \begin{figure}[h]
     \centering
