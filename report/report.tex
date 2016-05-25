@@ -40,14 +40,14 @@
   \paragraph{Proper $q$-colorings}
   Let $G = (V, E)$ a graph with $|V| = N$ vertices. A \emph{coloring} using $q$ colors is an assignment $x \in \{ 1, \ldots, q \}^N$ for all elements in $V$. A \emph{proper} $q$-coloring is a coloring such that no two adjacent vertices have the same color: $(v, v') \in E \Rightarrow x_v \neq x_{v'}$. From this definition, we can define a cost function (Hamiltonian) to evaluate the ``quality'' of a given coloring:
   \[
-    H(x) = \sum_{(v, v') \in E} \mathbb{1}_{x_v = x_{v'}}.
+    H(x) = \sum_{(v, v') \in E} \mathbb{1}_{x_v = x_{v'}}
   \]
 
   In the general case, finding the proper $q$-coloring of a graph of size $N$ is NP complete\footnote{\url{https://en.wikipedia.org/wiki/Graph_coloring\#Computational_complexity}}, assuming $2 < q < N$. The search space is the domain of all colorings $x$, which has a size exponential in $N$. It is therefore interesting to relax the problem into an optimization problem. Using the cost function defined above:
   \[
-    x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x).
+    x^* = \argmin_{x \in \{ 1, \ldots, q \}^N} H(x)
   \]
-  We have, then, that $x^*$ is a proper coloring when the minimum cost achieved is $0$. In the following section, we will describe how the Metropolis-Hastings algorithm can be used in this setting.
+  We have, then, that $x^*$ is a proper coloring when the minimum cost achieved is $0$. In the following section, we will describe how the MCMC technique can be applied in this setting.
 
   \paragraph{Input data}
   In this project, we use Erd\H{o}s-R\'{e}nyi random graphs to test the correctness of our implementation and convergence speeds. They are constructed as follows: for a given density parameter $c$, each pair of the $N$ vertices is connected with probability $c / N$. Examples are given in Figure~\ref{Fig:random-graph-examples}, where an initial random coloring is also visualized.
@@ -79,11 +79,11 @@
   \section*{MCMC solution}
   Once the graph coloring problem is formulated as an optimization problem, we are able to bring it into the MCMC framework. We setup a simple Markov Chain over the space of colorings. Transitions correspond to changing one vertex (chosen uniformly at random) to a different color (chosen uniformly at random). After generating a proposed transition, we compute the change in cost:
   \[
-    \Delta = H(x^{new}) - H(x^t).
+    \Delta = H(x^{new}) - H(x^t)
   \]
   The proposed transition is performed with some acceptance probability, defined below. This process is repeated until a proper coloring is found ($H(x) = 0$) or a maximum number of iterations is reached.
 
-  Figure~\ref{Fig:random-walk-example} shows the evolution of cost $H(x)$ over the course of an example walk. When enough colors $q$ are available w.r.t. the density $c$ of the graph, the walk converges to a proper coloring in few iterations. We plot in Figure~\ref{Fig:cost-vs-density} the relationship between the best cost achieved and the graph's density, for different values of $q$.
+  Figure~\ref{Fig:random-walk-example} shows the evolution of cost $H(x)$ over the course of an example walk. When enough colors $q$ are available w.r.t. the density $c$ of the graph, the walk converges to a proper coloring in few iterations, which run fast even on a commodity laptop: for $N \approx 1000$, the search completes $5000$ iterations in less than 3 minutes. Note that most of the computation time dedicated to the evaluation of the cost function. We plot in Figure~\ref{Fig:cost-vs-density} the relationship between the best cost achieved and the graph's density, for different values of $q$.
 
   \begin{figure}[h]
     \centering
@@ -101,9 +101,9 @@
   \end{figure}
 
   \paragraph{Simulated annealing}
-  In order to find the global minimum of our cost function $H(x)$, which potentially contains several local minima, we make use of the \textit{simulated annealing}. This method simulates the physical process of applying temperature to a metal and then progressively cooling it down, in order to achieve a crystal configuration with lower energy than the original, which improves some properties of the material. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a \emph{schedule}, a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
+  In order to find the global minimum of our cost function $H(x)$, which potentially contains several local minima, we make use of the \textit{simulated annealing} metaheuristic. This method simulates the physical process of applying temperature to a metal and then progressively cooling it down, in order to achieve a crystal configuration with lower energy than the original, which improves some properties of the material. During the cooling procedure, we reduce the ``temperature'' $T$ or, equivalently, increase the ``inverse temperature'' $\beta=\frac{1}{T}$. The way the temperature is reduced is managed by a \emph{schedule}, a function of the current time step. In our implementation, we perform simulated annealing by increasing $\beta$ and the schedule will be referred to as $\beta(t)$. The acceptance probability for a proposed move with energy difference $\Delta$ is defined as:
   \[
-    a = \exp(- \beta(t) \times \Delta).
+    a = \exp(- \beta(t) \cdot \Delta)
   \]
 
   % -----------------------------------------------------------------------------------
@@ -113,8 +113,8 @@
   % TODO: Efficient implementations for generating the graph, transitioning, etc. Give some number to describe algorithm's performance (e.g. average time / iteration). Point out what can be parallelized (several independent chains with different initializations can run in parallel) and what cannot (a single chain).
 
   % \paragraph{Experiments}
-  We define in Table \ref{tab:schedules} five different schedules, each tunable by some parameters. They all depend on the current time step $t \in [0, 1]$, normalized by the maximum number of iterations. The inverse temperature $\beta(t)$ should approach infinity when $t$ approaches the maximum number of iterations, such that the acceptance probabilities approach $0$ at this time. Moreover, we also create a discretized version of each schedule in order to keep the value of $\beta$ constant for some time before increasing it.
-   
+  We propose in Table~\ref{tab:schedules} five different schedules, each adjustable by two parameters. Schedules depend mainly on the current time step $t \in [0, 1]$, which is normalized by the maximum number of iterations. Generally, the inverse temperature $\beta(t)$ should approach ``infinity'' when the simulation approaches its maximum number of iterations, so that the acceptance probability of an error-increasing transition tends to $0$. As a variation, we create a discretized version of each schedule: the value of $\beta$ is kept constant for some number of iterations before jumping discretely to the next value in the schedule, as illustrated on Figure~\ref{fig:schedules_discretized_shape}.
+
   \begin{table}[h]
     \begin{center}
     \def\arraystretch{1.5}
@@ -128,11 +128,11 @@
 	\hline
       \end{tabular}
     \end{center}
-    \caption{Schedules for $\beta(t)$. The parameters are hand-tuned.}
+    \caption{Proposed simulated annealing schedules $\beta(t)$. The parameter values were determined experimentally. The schedules can be visualized on Figure~\ref{fig:schedules_linear_shape} (continuous version) and \ref{fig:schedules_discretized_shape} (discretized version).}
     \label{tab:schedules}
   \end{table}
 
-  We optimize the parameters of each schedule manually. The shape of the schedules are shown in Figure \ref{fig:schedules_linear_shape} and \ref{fig:schedules_discretized_shape}. We then compare them against each other on a graph of size $N=250$ and using $q=10$ colors. The edges density $c$ is linearly increased from 0 to $N/4$. Some results are displayed in Figure \ref{fig:schedules_evaluation}. The discretized schedules all perform better than the continuous ones. The continuous sublinear schedule (here, a square root) is the best continuous schedule and is compared against the discretized schedules. We notice that the logarithmic schedule, also a slow-growing function of time, has similar performance.
+  After selecting values for each parameter experimentally, we compare them against each other on a graph of size $N=250$ and using $q=10$ colors. The edges density $c$ is linearly increased from $0$ to $N/4$. Each discretized schedules performs better than its continuous counterpart. Even though the differences are not very marked, the continuous sublinear schedule (here, a square root) is the best continuous schedule. It is compared against the discretized schedules on Figure~\ref{fig:schedules_evaluation}. We notice that the logarithmic schedule, also a slow-growing function of time, achieves similar performance. We expect that further gains can be achieved with careful tuning of the parameters and experimentation with other variations.
 
   \begin{figure}[h]
     \centering
@@ -151,7 +151,7 @@
     \begin{subfigure}[t]{.33\linewidth} % Evaluation
       \centering
       \includegraphics[width=1\linewidth]{figures/schedules_evaluation.pdf}
-      \caption{Results of the graph coloring on a graph of size $N=250$ and with $q=10$ colors.}
+      \caption{Comparing the performance of discretized schedules and the ``sublinear'' continuous schedule for various inputs.}
       \label{fig:schedules_evaluation}
     \end{subfigure}
     \caption{Shape of schedules and comparison against each other.}
@@ -161,8 +161,9 @@
 
   % -----------------------------------------------------------------------------------
   \section*{Conclusion}
-  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our optimization handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than the linear ones. The sublinear continuous schedule provide results that are comparable to the discretized ones.
-\rbc{So which schedule are we recommending as the best?}
+  In this project, we formulated the graph coloring problem as an optimization problem and applied the MCMC technique to minimize it. Simulated annealing is used to avoid local minima of the Hamiltonian. Our implementation handles inputs of size $N=1000$ run over 5000 iterations in less than 3 minutes on a commodity laptop. We compared several schedules to decrease the temperature and found that discretized schedules perform better than most continuous ones. The sublinear continuous schedule provide results that are comparable to the discretized ones. We expect that even better performance can be achieved by tuning the parameters further.
+
+  \rbc{So which schedule are we recommending as the best?}
 
 \end{document}
 
