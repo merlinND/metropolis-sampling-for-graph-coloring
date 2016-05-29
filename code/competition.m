@@ -3,6 +3,8 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
 %   run from commandline as 
 %       matlab -nodisplay -r "competition('../data/RW2016.mat','../data',1000);"
 
+    discretized = 1;
+
     if nargin<3
         maxIterations = 10000;
     end
@@ -30,7 +32,9 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         % TODO: allow a *very large* number of iterations and save results
         % even before that max number of iterations is reached (requires
         % putting all the loops in one file though).
-        [X, E] = findColoring(competitionData.A, competitionData.q, maxIterations, schedule, scheduleArgs);
+        [X, E] = findColoring(competitionData.A, competitionData.q, ...
+                              maxIterations, discretized, ...
+                              schedule, scheduleArgs);
         if E < minEnergy
             save(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,E), 'X', 'E');
             % Don't delete anything, just in case anything goes wrong
