@@ -10,7 +10,6 @@ addpath(genpath('schedule'));
 % Generate test adjacency matrix
 N = 1000;            % Number of edges
 q = 4;              % Number of colors
-beta = 0.2;         % Inverse temperature
 c = 30;              % Density
 
 % Erdos-Renyi graph
@@ -34,7 +33,7 @@ schedule = getSchedule('sublinear');
 
 %% Metropolis
 
-n = 50000;  % Number of iterations
+n = 1e5;  % Number of iterations
 x = randsample(q, N, true);
 
 current_energy = H(adjI, adjJ, x);
