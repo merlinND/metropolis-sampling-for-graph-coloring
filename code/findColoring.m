@@ -1,4 +1,6 @@
-function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, discretized, schedule, scheduleArgs )
+function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, ...
+                                                        discretized, schedule, scheduleArgs, ...
+                                                        competitionOutputPath)
 %FINDCOLORING Find a proper coloring for graph G using q colors
 %    Uses the Metropolis-Hastings sampling method, starting from a random
 %    initial coloring, to find a proper coloring of G.
@@ -6,6 +8,9 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, d
 % as well as the associated cost.
     discSch = @(x) log(7*x+1) / log(8);
 
+    lastSaveTimestamp = 0;
+    lastSaveEnergy = Inf;
+    
     if nargin < 3
         max_iterations = 5000;
     end;
@@ -50,6 +55,26 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, d
         if current_cost < minimum_cost
             minimum_cost = current_cost;
             best_coloring = x;
+        end
+        
+        % Save intermediate result
+        if (i - lastSaveTimestamp >= 1000)
+            if (minimum_cost < lastSaveEnergy)
+                save(sprintf('%s/ThunderDucks_intermediate_E=%d.mat', ...
+                             competitionOutputPath, minimum_cost), ...
+                     'best_coloring', 'minimum_cost');
+                         
+                fprintf('Saved partial result with energy: %d\n', minimum_cost);
+                % Don't delete anything, just in case anything goes wrong
+                %try
+                %    delete(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,minEnergy));
+                %catch                
+                %end
+                lastSaveEnergy = minimum_cost;
+            end;
+            
+            lastSaveTimestamp = i;
+            
         end
         
         if current_cost == 0

@@ -6,7 +6,7 @@ addpath(genpath('./lib'));
 addpath(genpath('schedule'));
 
 %%
-nThreads = 8;
+nThreads = 4;
 maxIterations = 1e6;
 inputPath = '../data/RW2016.mat';
 

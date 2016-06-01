@@ -34,7 +34,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         % putting all the loops in one file though).
         [X, E] = findColoring(competitionData.A, competitionData.q, ...
                               maxIterations, discretized, ...
-                              schedule, scheduleArgs);
+                              schedule, scheduleArgs, competitionOutputPath);
         if E < minEnergy
             save(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,E), 'X', 'E');
             % Don't delete anything, just in case anything goes wrong
