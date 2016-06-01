@@ -19,10 +19,10 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
     
     % Logarithmic
     beta_0 = 10;
-    alpha = 1;
+    alpha = 0.5;
     tau = 0;
     scheduleArgs = {beta_0, alpha, tau};
-    schedule = getSchedule('logarithmic');
+    schedule = getSchedule('sublinear');
     
     competitionData = load(competitionDataPath);
     i=1;
