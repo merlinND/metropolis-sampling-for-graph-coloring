@@ -4,6 +4,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
 %       matlab -nodisplay -r "competition('../data/RW2016.mat','../data',1000);"
 
     discretized = 1;
+    q = 4;
 
     if nargin<3
         maxIterations = 10000;
@@ -12,7 +13,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         competitionOutputPath = '../data';
     end
     if nargin<1
-        competitionDataPath = '../data/RW2016.mat';
+        competitionDataPath = '../data/matrix.mat';
     end
         
     warning('off','MATLAB:DELETE:FileNotFound');
@@ -32,7 +33,7 @@ function [X,E] = competition(competitionDataPath, competitionOutputPath, maxIter
         % TODO: allow a *very large* number of iterations and save results
         % even before that max number of iterations is reached (requires
         % putting all the loops in one file though).
-        [X, E] = findColoring(competitionData.A, competitionData.q, ...
+        [X, E] = findColoring(competitionData.A, q, ...
                               maxIterations, discretized, ...
                               schedule, scheduleArgs, competitionOutputPath);
         if E < minEnergy

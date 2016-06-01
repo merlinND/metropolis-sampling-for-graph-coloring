@@ -64,7 +64,8 @@ function [ best_coloring, minimum_cost ] = findColoring( G, q, max_iterations, .
                              competitionOutputPath, minimum_cost), ...
                      'best_coloring', 'minimum_cost');
                          
-                fprintf('Saved partial result with energy: %d\n', minimum_cost);
+                fprintf('Saved partial result with energy: %d at it %d to path %s\n', ...
+                        minimum_cost, i, competitionOutputPath);
                 % Don't delete anything, just in case anything goes wrong
                 %try
                 %    delete(sprintf('%s/ThunderDucks_E=%d.mat',competitionOutputPath,minEnergy));

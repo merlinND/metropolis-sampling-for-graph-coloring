@@ -8,7 +8,7 @@ addpath(genpath('schedule'));
 %%
 nThreads = 4;
 maxIterations = 1e6;
-inputPath = '../data/RW2016.mat';
+inputPath = '../data/matrix.mat';
 
 parfor threadId = 1:nThreads
     outputPath = sprintf('../competition-data/%d/', threadId);
